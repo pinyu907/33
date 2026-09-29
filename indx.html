@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>幼兒3C鑑定事務所</title>
+
+  <style>
+
+    body {
+      margin: 0;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      text-align: center;
+      background: #f5e6b8;
+    }
+
+    /* 每一頁 */
+    .page {
+      display: none;
+      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* 顯示中的頁面 */
+    .show {
+      display: flex;
+    }
+
+    h1 {
+      font-size: 40px;
+    }
+
+    p {
+      font-size: 24px;
+      line-height: 1.7;
+    }
+
+    /* 一般按鈕 */
+    button {
+      padding: 18px 30px;
+      margin: 10px;
+      font-size: 23px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    /* 開始按鈕 */
+    .start-button {
+      background: #e85d4a;
+      color: white;
+    }
+
+    /* 個案頁 */
+    #casePage {
+      background: #f5e6b8;
+    }
+
+    .case-box {
+      background: white;
+      padding: 30px;
+      border-radius: 25px;
+      width: 90%;
+      max-width: 800px;
+      box-sizing: border-box;
+    }
+
+    .case-info {
+      margin: 25px 0;
+    }
+
+    /* 答案按鈕 */
+    .answer {
+      color: white;
+      width: 200px;
+    }
+
+    .red {
+      background: #e95757;
+    }
+
+    .yellow {
+      background: #e8c84b;
+      color: #333;
+    }
+
+    .green {
+      background: #59b96b;
+    }
+
+    /* 統計頁 */
+    #resultPage {
+      background: #f5e6b8;
+    }
+
+    .result-box {
+      background: white;
+      padding: 30px;
+      border-radius: 25px;
+      width: 90%;
+      max-width: 800px;
+      box-sizing: border-box;
+    }
+
+    .result-row {
+      margin: 25px 0;
+      text-align: left;
+    }
+
+    .result-label {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .bar-background {
+      width: 100%;
+      height: 40px;
+      background: #ddd;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s;
+    }
+
+    .red-bar {
+      background: #e95757;
+    }
+
+    .yellow-bar {
+      background: #e8c84b;
+    }
+
+    .green-bar {
+      background: #59b96b;
+    }
+
+    /* 手機版 */
+    @media (max-width: 600px) {
+
+      h1 {
+        font-size: 32px;
+      }
+
+      p {
+        font-size: 20px;
+      }
+
+      .answer {
+        width: 90%;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+
+  <!-- ========================= -->
+  <!-- 首頁 -->
+  <!-- ========================= -->
+
+  <div id="welcome" class="page show">
+
+    <h1>歡迎來到幼兒3C鑑定事務所</h1>
+
+    <p>
+      👋 歡迎入職本事務所！
+      <br><br>
+      準備好開始今天的鑑定工作了嗎？
+    </p>
+
+    <button id="startButton" class="start-button">
+      🔨 開始上工
+    </button>
+
+  </div>
+
+
+
+  <!-- ========================= -->
+  <!-- 個案頁 -->
+  <!-- ========================= -->
+
+  <div id="casePage" class="page">
+
+    <div class="case-box">
+
+      <h1 id="caseNumber">
+        個案一
+      </h1>
+
+      <h2>
+        📋 個案資料
+      </h2>
+
+      <div id="caseInfo" class="case-info">
+      </div>
+
+
+      <h2>
+        你覺得這個孩子的3C使用時間如何？
+      </h2>
+
+
+      <div>
+
+        <button id="tooMuchButton" class="answer red">
+          🔴 太多了
+        </button>
+
+        <button id="okayButton" class="answer yellow">
+          🟡 還可以
+        </button>
+
+        <button id="goodButton" class="answer green">
+          🟢 完全 OK
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ========================= -->
+  <!-- 統計頁 -->
+  <!-- ========================= -->
+
+  <div id="resultPage" class="page">
+
+    <div class="result-box">
+
+      <h1>
+        📊 本題回答統計
+      </h1>
+
+
+      <!-- 太多 -->
+      <div class="result-row">
+
+        <div class="result-label">
+          🔴 太多了：
+          <span id="redCount">0</span> 人
+        </div>
+
+        <div class="bar-background">
+          <div id="redBar" class="bar red-bar"></div>
+        </div>
+
+      </div>
+
+
+      <!-- 還可以 -->
+      <div class="result-row">
+
+        <div class="result-label">
+          🟡 還可以：
+          <span id="yellowCount">0</span> 人
+        </div>
+
+        <div class="bar-background">
+          <div id="yellowBar" class="bar yellow-bar"></div>
+        </div>
+
+      </div>
+
+
+      <!-- 完全OK -->
+      <div class="result-row">
+
+        <div class="result-label">
+          🟢 完全 OK：
+          <span id="greenCount">0</span> 人
+        </div>
+
+        <div class="bar-background">
+          <div id="greenBar" class="bar green-bar"></div>
+        </div>
+
+      </div>
+
+
+      <button id="nextButton" class="start-button">
+        ➡️ 下一單
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ========================= -->
+  <!-- JavaScript -->
+  <!-- ========================= -->
+
+  <script>
+
+
+    /* =========================
+       個案資料
+    ========================= */
+
+    const cases = [
+
+      {
+        name: "林家豪",
+        age: "5歲",
+
+        info: `
+          👶🏻 <strong>林家豪，5歲</strong>
+          <br><br>
+          晚餐後獎勵使用平板 1 小時
+          <br>
+          看 YouTube 短片
+          <br>
+          無大人陪同
+        `
+      },
+
+
+      {
+        name: "張美惠",
+        age: "3歲",
+
+        info: `
+          👶🏻 <strong>張美惠，3歲</strong>
+          <br><br>
+          每日使用 4 小時
+          <br>
+          1 小時看寶寶巴士（電視）
+          <br>
+          1.5 小時和父母一起看動畫電影（電視）
+          <br>
+          1.5 小時父母陪同使用英語學習 App（平板）
+        `
+      },
+
+
+      {
+        name: "Jason Black",
+        age: "2歲",
+
+        info: `
+          👶🏻 <strong>Jason Black，2歲</strong>
+          <br><br>
+          每日使用 5 小時
+          <br>
+          看哆啦A夢（電視）
+          <br>
+          無大人陪同
+        `
+      }
+
+    ];
+
+
+
+    /* =========================
+       目前是第幾個個案
+    ========================= */
+
+    let currentCase = 0;
+
+
+
+    /* =========================
+       投票數
+    ========================= */
+
+    let redVotes = 0;
+    let yellowVotes = 0;
+    let greenVotes = 0;
+
+
+
+    /* =========================
+       找到各個頁面
+    ========================= */
+
+    const welcome =
+      document.getElementById("welcome");
+
+    const casePage =
+      document.getElementById("casePage");
+
+    const resultPage =
+      document.getElementById("resultPage");
+
+
+
+    /* =========================
+       開始上工
+    ========================= */
+
+    document
+      .getElementById("startButton")
+      .addEventListener("click", function() {
+
+        welcome.classList.remove("show");
+
+        casePage.classList.add("show");
+
+        showCase();
+
+      });
+
+
+
+    /* =========================
+       顯示個案
+    ========================= */
+
+    function showCase() {
+
+      const current = cases[currentCase];
+
+
+      document.getElementById("caseNumber").textContent =
+        "個案 " + (currentCase + 1);
+
+
+      document.getElementById("caseInfo").innerHTML =
+        current.info;
+
+
+      /* 每一題重新計算 */
+      redVotes = 0;
+      yellowVotes = 0;
+      greenVotes = 0;
+
+
+      /* 重新啟用按鈕 */
+
+      document.getElementById("tooMuchButton").disabled = false;
+
+      document.getElementById("okayButton").disabled = false;
+
+      document.getElementById("goodButton").disabled = false;
+
+    }
+
+
+
+    /* =========================
+       太多了
+    ========================= */
+
+    document
+      .getElementById("tooMuchButton")
+      .addEventListener("click", function() {
+
+        redVotes++;
+
+        showResult();
+
+      });
+
+
+
+    /* =========================
+       還可以
+    ========================= */
+
+    document
+      .getElementById("okayButton")
+      .addEventListener("click", function() {
+
+        yellowVotes++;
+
+        showResult();
+
+      });
+
+
+
+    /* =========================
+       完全OK
+    ========================= */
+
+    document
+      .getElementById("goodButton")
+      .addEventListener("click", function() {
+
+        greenVotes++;
+
+        showResult();
+
+      });
+
+
+
+    /* =========================
+       顯示統計
+    ========================= */
+
+    function showResult() {
+
+      casePage.classList.remove("show");
+
+      resultPage.classList.add("show");
+
+
+      /* 顯示人數 */
+
+      document.getElementById("redCount").textContent =
+        redVotes;
+
+      document.getElementById("yellowCount").textContent =
+        yellowVotes;
+
+      document.getElementById("greenCount").textContent =
+        greenVotes;
+
+
+      /* 計算百分比 */
+
+      const total =
+        redVotes + yellowVotes + greenVotes;
+
+
+      let redPercent = 0;
+      let yellowPercent = 0;
+      let greenPercent = 0;
+
+
+      if (total > 0) {
+
+        redPercent =
+          redVotes / total * 100;
+
+        yellowPercent =
+          yellowVotes / total * 100;
+
+        greenPercent =
+          greenVotes / total * 100;
+
+      }
+
+
+      /* 長條圖 */
+
+      document.getElementById("redBar").style.width =
+        redPercent + "%";
+
+      document.getElementById("yellowBar").style.width =
+        yellowPercent + "%";
+
+      document.getElementById("greenBar").style.width =
+        greenPercent + "%";
+
+    }
+
+
+
+    /* =========================
+       下一單
+    ========================= */
+
+    document
+      .getElementById("nextButton")
+      .addEventListener("click", function() {
+
+
+        currentCase++;
+
+
+        /* 還有個案 */
+
+        if (currentCase < cases.length) {
+
+          resultPage.classList.remove("show");
+
+          casePage.classList.add("show");
+
+          showCase();
+
+        }
+
+
+        /* 全部完成 */
+
+        else {
+
+          alert("🎉 恭喜你完成所有案件！");
+
+          currentCase = 0;
+
+          resultPage.classList.remove("show");
+
+          welcome.classList.add("show");
+
+        }
+
+      });
+
+
+  </script>
+
+</body>
+</html>
